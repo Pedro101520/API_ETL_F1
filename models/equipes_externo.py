@@ -1,0 +1,95 @@
+import requests
+from datetime import datetime
+import os
+import json
+
+from models.gcs import Salvar
+
+ano_atual = datetime.now().year
+hoje = datetime.now().date()
+
+class Equipes(Salvar):
+    def __init__(self):
+        self.info_individual = self.posicao_rodada()
+        print("Inicio")
+
+    def posicao_rodada(self):
+        verifica = True
+        i = 1
+        pontos_rodada = {}
+        while verifica:
+            try:
+                infos = requests.get(f"https://api.jolpi.ca/ergast/f1/{ano_atual}/{i}/constructorstandings/").json()
+                circuito = requests.get(f"https://api.jolpi.ca/ergast/f1/{ano_atual}/{i}/races/").json()
+            except Exception as e:
+                raise Exception(f"erro: {e}")
+            
+            if len(infos["MRData"]["StandingsTable"]["StandingsLists"]) > 0:
+                i += 1
+                StandingsLists = infos["MRData"]["StandingsTable"]["StandingsLists"][0]
+                ConstructorStandings = StandingsLists["ConstructorStandings"]
+                for j in ConstructorStandings:
+                    id_construtor = j["Constructor"]["constructorId"]
+                    if id_construtor not in pontos_rodada:
+                        pontos_rodada[id_construtor] = {
+                            "corrida": []
+                        }
+                    pontos_rodada[id_construtor]["corrida"].append({
+                        "rodada": infos["MRData"]["StandingsTable"]["round"],
+                        "pontos": j["points"],
+                        "posicao": j["positionText"],
+                        "id_circuito": circuito["MRData"]["RaceTable"]["Races"][0]["raceName"]
+                    })
+            else:
+                break
+        return pontos_rodada
+
+
+    def info_equipes(self):
+        equipes = {}
+        try:
+            infos = requests.get(f"https://api.jolpi.ca/ergast/f1/{ano_atual}/constructors/").json()
+        except Exception as e:
+            raise Exception(f"erro: {e}")
+        
+        for i in infos["MRData"]["ConstructorTable"]["Constructors"]:
+            try:
+                equipe_individual = requests.get(f"https://api.jolpi.ca/ergast/f1/{ano_atual}/constructors/{i["constructorId"]}/constructorstandings/").json()
+                id_piloto = requests.get(f"https://api.jolpi.ca/ergast/f1/{ano_atual}/constructors/{i["constructorId"]}/drivers/").json()
+                standings_lists = equipe_individual["MRData"]["StandingsTable"]["StandingsLists"]
+            except Exception as e:
+                raise Exception(f"erro: {e}")
+            
+            if not standings_lists:
+                continue
+
+            valor = standings_lists[0]["ConstructorStandings"][0]
+            if i["constructorId"] not in equipes:
+                equipes[i["constructorId"]] = {
+                    "nome": i["name"],
+                    "posicao": valor["positionText"],
+                    "pontos": valor["points"],
+                    "vitorias": valor["wins"],
+                    "nacionalidade": valor["Constructor"]["nationality"],
+                    "piloto_id": [],
+                    "info_individual_rodada": self.info_individual[i["constructorId"]]
+                }
+            
+            lists_equipe_piloto = id_piloto["MRData"]["DriverTable"]["Drivers"]
+            for j in lists_equipe_piloto:
+                equipes[i["constructorId"]]["piloto_id"].append(j["driverId"])
+
+        return equipes
+
+
+    def salva_gcs(self):
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "clever-axe-457319-g8-833d2d4ab67f.json"
+
+        client = super().get_storage_client()
+        bucket = client.bucket("f1-dashboard-pilotos")
+        blob = bucket.blob("f1_equipes.json")
+
+        blob.upload_from_string(
+            json.dumps(self.info_equipes(), ensure_ascii=False, indent=2),
+            content_type="application/json"
+        )
