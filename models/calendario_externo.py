@@ -1,11 +1,11 @@
 import requests
-import os
+from google.cloud import storage
+from google.oauth2 import service_account
 import json
 
-from models.gcs import Salvar
 from datetime import datetime
 
-class Calendario(Salvar):
+class Calendario():
     def rodadas(self):
         ano_atual = datetime.now().year
         try:
@@ -55,9 +55,7 @@ class Calendario(Salvar):
         return infos_corridas
 
     def salva_gcs(self):
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "clever-axe-457319-g8-833d2d4ab67f.json"
-
-        client = super().get_storage_client()
+        client = storage.Client()
         bucket = client.bucket("f1-dashboard-pilotos")
         blob = bucket.blob("f1_calendario.json")
 

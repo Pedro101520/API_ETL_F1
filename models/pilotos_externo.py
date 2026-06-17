@@ -1,15 +1,15 @@
 import requests
 from datetime import datetime
 import json
-import os
+from google.cloud import storage
+from google.oauth2 import service_account
 import time
 
-from models.gcs import Salvar
 
 ano_atual = datetime.now().year
 hoje = datetime.now().date()
 
-class Pilotos(Salvar):
+class Pilotos():
     def __init__(self):
         print("Inicio 2")
         self.nome_id = self.lista_id()
@@ -267,9 +267,7 @@ class Pilotos(Salvar):
         return infos_pilotos
 
     def salva_gcs(self):
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "clever-axe-457319-g8-833d2d4ab67f.json"
-
-        client = super().get_storage_client()
+        client = client = storage.Client()
         bucket = client.bucket("f1-dashboard-pilotos")
         blob = bucket.blob("f1_pilotos.json")
 

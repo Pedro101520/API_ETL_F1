@@ -1,13 +1,12 @@
 import requests
 from datetime import datetime
 import json
-import os
-
-from models.gcs import Salvar
+from google.cloud import storage
+from google.oauth2 import service_account
 
 ano_atual = datetime.now().year
 
-class Campeonato(Salvar):
+class Campeonato():
     def tabela_campeonato(self):
         tabela_camp = {
             "tabela_pilotos": [],
@@ -44,9 +43,7 @@ class Campeonato(Salvar):
 
 
     def salva_gcs(self):
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "clever-axe-457319-g8-833d2d4ab67f.json"
-
-        client = super().get_storage_client()
+        client = client = storage.Client()
         bucket = client.bucket("f1-dashboard-pilotos")
         blob = bucket.blob("f1_campeonato.json")
 
