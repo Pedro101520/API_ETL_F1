@@ -53,8 +53,8 @@ class Equipes():
         
         for i in infos["MRData"]["ConstructorTable"]["Constructors"]:
             try:
-                equipe_individual = requests.get(f"https://api.jolpi.ca/ergast/f1/{ano_atual}/constructors/{i["constructorId"]}/constructorstandings/").json()
-                id_piloto = requests.get(f"https://api.jolpi.ca/ergast/f1/{ano_atual}/constructors/{i["constructorId"]}/drivers/").json()
+                equipe_individual = requests.get(f"https://api.jolpi.ca/ergast/f1/{ano_atual}/constructors/{i['constructorId']}/constructorstandings/").json()
+                id_piloto = requests.get(f"https://api.jolpi.ca/ergast/f1/{ano_atual}/constructors/{i['constructorId']}/drivers/").json()
                 standings_lists = equipe_individual["MRData"]["StandingsTable"]["StandingsLists"]
             except Exception as e:
                 raise Exception(f"erro: {e}")

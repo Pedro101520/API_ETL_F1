@@ -231,8 +231,8 @@ class Pilotos():
 
                 if i not in infos_pilotos:
                     infos_pilotos[i] = {
-                        "nome": f"{j["Results"][0]["Driver"]["givenName"]}",
-                        "sobrenome": f"{j["Results"][0]["Driver"]["familyName"]}",
+                        "nome": f'{j["Results"][0]["Driver"]["givenName"]}',
+                        "sobrenome": f'{j["Results"][0]["Driver"]["familyName"]}',
                         "nacionalidade": j["Results"][0]["Driver"]["nationality"],
                         "idade": idade,
                         "estreia": self.estreia[i]["ano"],

@@ -24,7 +24,7 @@ class Campeonato():
 
         for i in info["DriverStandings"]:  
             tabela_camp["tabela_pilotos"].append({
-                "nome": f"{i["Driver"]["givenName"]} {i["Driver"]["familyName"]}",
+                "nome": f'{i["Driver"]["givenName"]} {i["Driver"]["familyName"]}',
                 "equipe": i["Constructors"][0]["name"],
                 "pais": i["Driver"]["nationality"],
                 "vitorias": i["wins"],
