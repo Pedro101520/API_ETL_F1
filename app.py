@@ -6,7 +6,7 @@ from models.pilotos_externo import Pilotos
 
 app = Flask(__name__)
 
-@app.route("/etl/formula1", methods=["GET"])
+@app.route("/etl/formula1", methods=["POST"])
 def pipeline():
     calendario = Calendario()
     campeonato = Campeonato()
