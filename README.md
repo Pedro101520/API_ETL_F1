@@ -19,6 +19,17 @@ Destaco que todas as informações são atualizadas automaticamente após o tér
 - Google Cloud (Storage, Cloud Run, Cloud Scheduler)
 - Docker
 
+## Visão geral da estrutura
+```
+Acesso das informações via Jolpica F1 e FastF1 da última corrida
+        ↓
+API de predição (Cloud Run + Cloud Scheduler)
+        ↓
+Salvar arquivos no Storage do GCP para acesso posterior no Dashboard
+        ↓
+Dashboard Streamlit
+```
+
 ## Como funciona
 
 Desenvolvi a API de uma forma simples, para deixar o mais compreensível possível: uma única rota executa todas as funções do pipeline, uma por vez. São elas:
