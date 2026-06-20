@@ -23,7 +23,7 @@ Destaco que todas as informações são atualizadas automaticamente após o tér
 ```
 Acesso das informações via Jolpica F1 e FastF1 da última corrida
         ↓
-API de predição (Cloud Run + Cloud Scheduler)
+API de ETL (Cloud Run + Cloud Scheduler)
         ↓
 Salvar arquivos no Storage do GCP para acesso posterior no Dashboard
         ↓
