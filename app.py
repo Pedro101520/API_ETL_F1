@@ -3,6 +3,7 @@ from models.calendario_externo import Calendario
 from models.campeonato_externo import Campeonato
 from models.equipes_externo import Equipes
 from models.pilotos_externo import Pilotos
+import time
 
 app = Flask(__name__)
 
@@ -14,8 +15,11 @@ def pipeline():
     pilotos = Pilotos()
     try:
         calendario.salva_gcs()
+        time.sleep(60)
         campeonato.salva_gcs()
+        time.sleep(60)
         equipes.salva_gcs()
+        time.sleep(60)
         pilotos.salva_gcs()
     except Exception as e:
         return jsonify({"erro": str(e)}), 500

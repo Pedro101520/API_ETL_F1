@@ -10,7 +10,6 @@ hoje = datetime.now().date()
 class Equipes():
     def __init__(self):
         self.info_individual = self.posicao_rodada()
-        print("Inicio")
 
     def posicao_rodada(self):
         verifica = True

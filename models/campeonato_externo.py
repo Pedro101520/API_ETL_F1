@@ -3,11 +3,13 @@ from datetime import datetime
 import json
 from google.cloud import storage
 from google.oauth2 import service_account
+import time 
 
 ano_atual = datetime.now().year
 
 class Campeonato():
     def tabela_campeonato(self):
+
         tabela_camp = {
             "tabela_pilotos": [],
             "tabela_equipes": []

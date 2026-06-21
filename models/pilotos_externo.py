@@ -11,7 +11,6 @@ hoje = datetime.now().date()
 
 class Pilotos():
     def __init__(self):
-        print("Inicio 2")
         self.nome_id = self.lista_id()
         self.estreia = self.inicio_f1()
         self.posicao = self.posicao_campeonato()
@@ -23,6 +22,7 @@ class Pilotos():
 
 
     def lista_id(self):
+        time.sleep(60)
         ids = []
         try:
             infos = requests.get(f"https://api.jolpi.ca/ergast/f1/{ano_atual}/drivers/").json()
@@ -35,7 +35,7 @@ class Pilotos():
         }
 
     def inicio_f1(self):
-        time.sleep(20)
+        time.sleep(60)
         estreia = {}
         for i in self.nome_id["id"]:
             try:
@@ -50,10 +50,11 @@ class Pilotos():
             except:
                 if i not in estreia:
                     continue
+        time.sleep(1)
         return estreia
 
     def posicao_campeonato(self):
-        time.sleep(20)
+        time.sleep(60)
         posicao = {}
         for i in self.nome_id["id"]:
             try:
@@ -72,16 +73,18 @@ class Pilotos():
                         "posicao": 0,
                         "pontos": 0
                     }
+            time.sleep(1)
         return posicao
 
     def pole_position(self):
-        time.sleep(20)
+        time.sleep(60)
         pole = {}
         for i in self.nome_id["id"]:
             try:
                 acesso = requests.get(f"https://api.jolpi.ca/ergast/f1/{ano_atual}/drivers/{i}/results/").json()
             except Exception as e:
-                raise Exception(f"erro: {e}")
+                # raise Exception(f"erro: {e}")
+                continue
             if i not in pole:
                 pole[i] = {
                     "qtde_pole_position": 0
@@ -93,11 +96,12 @@ class Pilotos():
                 valor = int(j["Results"][0].get("grid", 0))
                 if valor == 1:
                     pole[i]["qtde_pole_position"] += 1
+            time.sleep(1)
 
         return pole
 
     def media_posicao(self):
-        time.sleep(20)
+        time.sleep(60)
         media = {}
         for i in self.nome_id["id"]:
             try:
@@ -119,11 +123,12 @@ class Pilotos():
             
             if total_valido > 0:
                 media[i]["media"] = str(grid / total_valido)
+            time.sleep(1)
 
         return media
 
     def calculo_mundial(self):
-        time.sleep(20)
+        time.sleep(60)
         mundiais = {}
 
         lista_estreia = []
@@ -151,11 +156,12 @@ class Pilotos():
             vencedor_mundial = acesso["MRData"]["StandingsTable"]["StandingsLists"][0]["DriverStandings"][0]["Driver"]["driverId"]
             if vencedor_mundial in mundiais:
                 mundiais[vencedor_mundial]["qtde_mundial"] += 1
+            time.sleep(1)
         
         return mundiais
 
     def pontos_posicao(self):
-        time.sleep(20)
+        time.sleep(60)
         posicao_valor = []
         for i in self.nome_id["id"]:
             try:
@@ -187,6 +193,7 @@ class Pilotos():
                     "status": j["Results"][0]["status"],
                     "volta_mais_rapida": j["Results"][0].get("FastestLap", {}).get("Time", {}).get("time", "")
                 })
+            time.sleep(1)
         return posicao_valor
 
     def agrupa(self):
@@ -263,6 +270,7 @@ class Pilotos():
                 
                 if j["Results"][0]["status"] == 'Retired' or j["Results"][0]["status"] == "Did not start":
                     infos_pilotos[i]["abandonos"] += 1
+            time.sleep(2)
                     
         return infos_pilotos
 
