@@ -36,7 +36,7 @@ class Calendario():
         for i in acesso:
             data = datetime.strptime(i["date"], "%Y-%m-%d")
 
-            if data.date() >= data_atual.date(): 
+            if data.date() > data_atual.date(): 
                 prox_corrida_calendario.append(i["date"])
                 prox_cidade.append(i["Circuit"]["Location"]["locality"])
                 prox_grandes_premios.append(i["raceName"])
